@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="yandex-verification" content="1960e7cf210b3740" />
+  <title>Alyona Belova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #eef0f7;
+      --surface:  #f8f7ff;
+      --ink:      #2c2b3a;
+      --muted:    #8885a0;
+      --lavender: #c5bff5;
+      --pink:     #f2c4ce;
+      --mint:     #b8e8d8;
+      --sky:      #b8d8f2;
+      --peach:    #f5d5b8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Soft blobs ── */
+    .blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+    }
+    .blob-1 { width: 520px; height: 520px; background: var(--lavender); top: -180px; right: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--pink);     bottom: 10%; left: -120px; }
+    .blob-3 { width: 300px; height: 300px; background: var(--mint);     top: 45%;    right: 5%;   }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ─────────── HEADER ─────────── */
+    header {
+      padding: 72px 0 60px;
+      opacity: 0;
+      animation: rise 0.7s ease forwards 0.1s;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      line-height: 1.08;
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    /* ─────────── CARDS ─────────── */
+    .cards-section { padding-bottom: 96px; }
+
+    .cards-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: rise 0.6s ease forwards 0.35s;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    a.card {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--ink);
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px 28px 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease;
+      opacity: 0;
+      animation: rise 0.6s ease forwards;
+    }
+
+    a.card:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 16px 48px rgba(44,43,58,0.10);
+    }
+
+    .card-dot {
+      position: absolute;
+      top: -28px;
+      right: -28px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--card-color, var(--lavender));
+      opacity: 0.5;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    a.card:hover .card-dot { opacity: 0.75; transform: scale(1.15); }
+
+    .card-emoji {
+      font-size: 2rem;
+      margin-bottom: 18px;
+      line-height: 1;
+      position: relative;
+    }
+
+    .card-lang {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.45rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .card-title-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-style: italic;
+      min-height: 1.2em;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: #5a5870;
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.45;
+      transition: opacity 0.2s, gap 0.2s;
+    }
+    a.card:hover .card-cta { opacity: 1; gap: 10px; }
+
+    .card-word  { grid-column: span 6; animation-delay: 0.45s; --card-color: var(--lavender); }
+    .card-myth  { grid-column: span 6; animation-delay: 0.55s; --card-color: var(--pink); }
+    .card-gloss { grid-column: span 4; animation-delay: 0.65s; --card-color: var(--mint); }
+    .card-520   { grid-column: span 4; animation-delay: 0.72s; --card-color: var(--peach); }
+    .card-bday  { grid-column: span 4; animation-delay: 0.80s; --card-color: var(--sky); }
+
+    /* ─────────── FOOTER ─────────── */
+    footer {
+      text-align: center;
+      padding: 0 0 52px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: rise 0.6s ease forwards 1s;
+    }
+    footer span { opacity: 0.5; margin: 0 8px; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 680px) {
+      .card-word, .card-myth,
+      .card-gloss, .card-520, .card-bday { grid-column: span 12; }
+    }
+    @media (min-width: 681px) and (max-width: 860px) {
+      .card-word, .card-myth  { grid-column: span 6; }
+      .card-gloss, .card-520  { grid-column: span 6; }
+      .card-bday              { grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Alyona Belova · Алёна Белова</p>
+    <h1>
+      my little corner<br>of the web.
+    </h1>
+  </header>
+
+  <section class="cards-section">
+    <p class="cards-label">Projects · Проекты</p>
+
+    <div class="cards">
+
+      <a class="card card-word" href="https://alyona-belova.github.io/word_search_game/" target="_blank" rel="noopener">
+        <div class="card-dot"></div>
+        <div class="card-emoji">🔤</div>
+        <p class="card-lang">Word game · Игра слов</p>
+        <h2 class="card-title">Зигзаг</h2>
+        <p class="card-title-sub">Zigzag</p>
+        <p class="card-desc">Find all the hidden words on the grid — each next letter can be in any of the 8 neighboring cells. Найди все спрятанные слова, двигаясь зигзагом.</p>
+        <span class="card-cta">Play →</span>
+      </a>
+
+      <a class="card card-myth" href="https://alyona-belova.github.io/slavic-myth-test/" target="_blank" rel="noopener">
+        <div class="card-dot"></div>
+        <div class="card-emoji">🌿</div>
+        <p class="card-lang">Quiz · Тест</p>
+        <h2 class="card-title">Slavic Myth</h2>
+        <p class="card-title-sub">Славянское воплощение</p>
+        <p class="card-desc">Which Slavic mythological figure are you? Узнай, какой персонаж славянских сказаний живёт внутри тебя.</p>
+        <span class="card-cta">Take the quiz →</span>
+      </a>
+
+      <a class="card card-gloss" href="https://alyona-belova.github.io/glossary-itmo/" target="_blank" rel="noopener">
+        <div class="card-dot"></div>
+        <div class="card-emoji">📖</div>
+        <p class="card-lang">Tool · Инструмент</p>
+        <h2 class="card-title">Глоссарий</h2>
+        <p class="card-title-sub">Glossary</p>
+        <p class="card-desc">Interactive glossary with a semantic concept graph. Глоссарий с семантическим графом понятий.</p>
+        <span class="card-cta">Open →</span>
+      </a>
+
+      <a class="card card-520" href="https://alyona-belova.github.io/520/" target="_blank" rel="noopener">
+        <div class="card-dot"></div>
+        <div class="card-emoji">💛</div>
+        <p class="card-lang">Special · Особое</p>
+        <h2 class="card-title">520</h2>
+        <p class="card-title-sub">&nbsp;</p>
+        <p class="card-desc">A small personal project. Маленький личный проект.</p>
+        <span class="card-cta">Visit →</span>
+      </a>
+
+      <a class="card card-bday" href="https://alyona-belova.github.io/birthday-blast/" target="_blank" rel="noopener">
+        <div class="card-dot"></div>
+        <div class="card-emoji">🎂</div>
+        <p class="card-lang">Game · Игра</p>
+        <h2 class="card-title">Birthday Blast!</h2>
+        <p class="card-title-sub">&nbsp;</p>
+        <p class="card-desc">Defend the Cake of Eternity from alien invaders in this birthday space arcade. Защити торт от инопланетян!</p>
+        <span class="card-cta">Play →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>alyona-belova.github.io <span>✦</span> made with ♡</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
